@@ -1,6 +1,5 @@
-export const AuthErrors = {
-    USER_EXISTS: 'User with this email already exists',
-    INVALID_CREDENTIALS: 'Invalid email or password',
-    SESSION_FAILED: 'Failed to create session',
-    HOUSEHOLD_CREATION_FAILED: 'Failed to create household',
+import { AuthErrors } from "../shared/constants/errors/auth.errors.js";
+
+export const ERR = {
+    AUTH: AuthErrors
 } as const;

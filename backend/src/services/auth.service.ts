@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { AppError } from "../utils/appError.js";
 import { generateRefreshToken, generateAccessToken } from "../utils/jwt.js";
 import { users } from "../db/schema/users.js";
-import { type RegisterInput } from "../shared/auth.schema.js";
+import { type LoginInput, type RegisterInput } from "../shared/auth.schema.js";
 import { AuthErrors } from "../shared/constants/errors/auth.errors.js";
 import { households } from "../db/schema/households.js";
 import bcrypt from "bcrypt";
@@ -42,6 +42,29 @@ export const registerUser = async (data: RegisterInput) => {
         return { user };
     });
 };
+
+export const loginUser = async (data: LoginInput) => {
+    const [user] = await db.select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        password: users.password,
+        householdId: users.householdId,
+        householdName: households.name,
+    }).from(users).leftJoin(households, eq(users.householdId, households.id)).where(eq(users.email, data.email));
+    if (!user) {
+        throw new AppError(AuthErrors.INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
+    }
+
+    const isPasswordValid = await bcrypt.compare(data.password, user.password);
+    if (!isPasswordValid) {
+        throw new AppError(AuthErrors.INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
+    }
+
+    const { password, ...userWithoutPassword } = user;
+
+    return { user: userWithoutPassword };
+}
 
 export const rotateRefreshToken = async (tokenString: string) => {
     const hashedToken = hashToken(tokenString);
@@ -89,6 +112,13 @@ export const createSession = async (userId: string, userAgent: string): Promise<
         token: hashedToken,
         userAgent,
         expiresAt,
+    }).onConflictDoUpdate({
+        target: [refreshTokens.userId, refreshTokens.userAgent],
+        set: {
+            token: hashedToken,
+            expiresAt,
+            updatedAt: new Date(),
+        }
     }).returning();
 
     if (!session) {
@@ -97,3 +127,8 @@ export const createSession = async (userId: string, userAgent: string): Promise<
 
     return rawToken;
 };
+
+export const logoutUser = async (rawRefreshToken: string) => {
+    const hashedToken = hashToken(rawRefreshToken);
+    await db.delete(refreshTokens).where(eq(refreshTokens.token, hashedToken));
+}

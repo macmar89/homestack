@@ -6,16 +6,20 @@ import cookieParser from 'cookie-parser';
 import { logger } from './utils/logger.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import apiRouter from './routes/index.js';
+import { IS_PRODUCTION } from './config/env.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+
+app.set('trust proxy', 1);
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
+
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: IS_PRODUCTION ? 'https://yourdomain.com' : 'http://localhost:3000',
     credentials: true
 }));
 

@@ -3,8 +3,8 @@ export const AuthErrors = {
 
     EMAIL_ALREADY_EXISTS: 'User with this email already exists',
     INVALID_CREDENTIALS: 'Invalid email or password',
-    TOKEN_EXPIRED: 'Your session has expired, please log in again',
-    UNAUTHORIZED: 'You must be logged in to access this resource',
+    TOKEN_EXPIRED: 'Your session has expired. Please refresh your token or log in again.',
+    UNAUTHORIZED: 'You are not authorized to access this resource. Please log in.',
     SESSION_FAILED: 'Failed to create session',
     HOUSEHOLD_CREATION_FAILED: 'Failed to create household',
     USER_CREATION_FAILED: 'Failed to create user',
