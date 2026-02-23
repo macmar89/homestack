@@ -15,12 +15,12 @@ export const errorHandler = (
         method: req.method,
     });
 
-    if (err.name === 'ZodError') {
+    if (err.name === 'ZodError' || err.issues) {
         return res.status(400).json({
             status: 'fail',
             message: 'Validation failed',
-            errors: err.errors.map((e: any) => ({
-                path: e.path.join('.'),
+            errors: (err.errors || err.issues || []).map((e: any) => ({
+                path: e.path.length > 0 ? e.path.join('.') : 'body',
                 message: e.message,
             })),
         });

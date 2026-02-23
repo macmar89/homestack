@@ -1,10 +1,11 @@
 import { z } from 'zod';
+import { AuthErrors } from './constants/errors/auth.errors';
 
 export const RegisterSchema = z.object({
-    email: z.email('Invalid email format'),
-    password: z.string().min(8, 'Password must be at least 8 characters long'),
-    name: z.string().min(2, 'Name must be at least 2 characters long'),
-    householdName: z.string().min(2, 'Household name must be at least 2 characters long'),
+    email: z.email(AuthErrors.VALIDATION.INVALID_EMAIL),
+    password: z.string().min(8, AuthErrors.VALIDATION.PASSWORD_TOO_SHORT),
+    name: z.string().min(2, AuthErrors.VALIDATION.NAME_TOO_SHORT),
+    householdName: z.string().min(2, AuthErrors.VALIDATION.HOUSEHOLD_NAME_TOO_SHORT),
 });
 
 export type RegisterInput = z.infer<typeof RegisterSchema>;
