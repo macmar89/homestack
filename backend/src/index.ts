@@ -7,6 +7,8 @@ import { logger } from './utils/logger.js';
 import { errorHandler } from './middleware/error.middleware.js';
 import apiRouter from './routes/index.js';
 import { IS_PRODUCTION } from './config/env.js';
+import { AppError } from './utils/appError.js';
+import { HttpStatus } from './utils/httpStatusCodes.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -26,6 +28,10 @@ app.use(cors({
 app.use(pinoHttp({ logger }));
 
 app.use('/api/v1', apiRouter);
+
+app.all('{*path}', (req, res, next) => {
+    next(new AppError(`Can't find ${req.originalUrl} on this server!`, HttpStatus.NOT_FOUND));
+});
 
 app.use(errorHandler)
 
