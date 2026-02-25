@@ -5,8 +5,12 @@ declare global {
         interface Request {
             user?: {
                 id: string;
-                householdId: string;
+                isSuperadmin: boolean;
             };
+            org?: {
+                id?: string;
+                role?: string
+            }
         }
     }
 }

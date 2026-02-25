@@ -14,7 +14,6 @@ export const isAuth = catchAsync(async (req: Request, res: Response, next: NextF
 
     try {
         const decoded = verifyAccessToken(token);
-        // Pridáme info o užívateľovi do requestu, aby sme ho vedeli použiť v controlleroch
         req.user = decoded;
         next();
     } catch (err) {
