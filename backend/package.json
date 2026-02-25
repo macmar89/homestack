@@ -8,6 +8,8 @@
     "dev": "tsx watch src/index.ts",
     "db:push": "tsx --env-file=.env node_modules/drizzle-kit/bin.cjs push",
     "db:studio": "tsx --env-file=.env node_modules/drizzle-kit/bin.cjs studio",
+    "db:generate": "tsx --env-file=.env node_modules/drizzle-kit/bin.cjs generate",
+    "db:migrate": "tsx src/db/migrate.ts",
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc",
     "start": "node dist/index.js",
