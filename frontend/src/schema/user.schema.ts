@@ -16,4 +16,4 @@ export const UserResponseSchema = z.object({
     }))
 });
 
-export type User = z.infer<typeof UserResponseSchema>;
+export type UserResponse = z.infer<typeof UserResponseSchema>;
