@@ -42,12 +42,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     res.status(HttpStatus.CREATED).json({
         status: 'success',
         data: {
-            user: {
-                id: user.id,
-                username: user.username,
-                displayName: user.displayName,
-                isSuperadmin: user.isSuperadmin
-            },
+            user,
             orgs
         }
     });
@@ -105,12 +100,7 @@ export const getMe = catchAsync(async (req: Request, res: Response) => {
     res.status(HttpStatus.OK).json({
         status: 'success',
         data: {
-            user: {
-                id: user.id,
-                username: user.username,
-                displayName: user.displayName,
-                isSuperadmin: user.isSuperadmin
-            },
+            user,
             orgs
         }
     });

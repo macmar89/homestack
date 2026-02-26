@@ -43,21 +43,23 @@ export function LoginForm({
 
     const result = await handlePostLogin(values);
 
-
-    if (result.success) {
+    if (!result.success) {
       console.log(result)
-      // router.push("/dashboard");
-    } else {
-      if (result.field) {
-        console.log(result.message)
-        form.setError(result.field as any, {
-          message: t(`errors.${result.message}`)
-        });
-      } else {
-        console.log(result.message)
-        setServerError(t(`errors.${result.message}`));
-      }
+      setServerError(t(`errors.${result.message}`));
+      return;
     }
+
+    if (result.isSuperadmin) {
+      router.push("/admin/dashboard");
+    }
+
+    if (!result.isSuperadmin) {
+      router.push({
+        pathname: '/[slug]/dashboard',
+        params: { slug: result.defaultOrgSlug }
+      });
+    }
+
   };
 
   return (

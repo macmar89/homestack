@@ -1,3 +1,4 @@
+import { redirect } from "@/i18n/routing";
 import { api } from "@/lib/api";
 import { API_ROUTES } from "@/lib/api-routes";
 import { LoginInput } from "@/schema/auth.schema";
@@ -9,22 +10,28 @@ export const handlePostLogin = async (values: LoginInput) => {
     try {
         const { data } = await api.post(API_ROUTES.AUTH.LOGIN, values);
 
-
         setUser(data);
 
-        console.log(data)
-
-        return {
-            success: true
-        };
+        const { data: { user } } = data
+        return { success: true, isSuperadmin: user?.isSuperadmin, defaultOrgSlug: user?.defaultOrgSlug };
     } catch (error: any) {
         const errorMessage = error.response?.data?.message || "UNEXPECTED_ERROR";
-        const errorField = error.response?.data?.field; // Backend môže poslať napr. "password"
 
         return {
             success: false,
             message: errorMessage,
-            field: errorField,
         };
+    }
+}
+
+export const handleLogout = async () => {
+    try {
+        await api.post(API_ROUTES.AUTH.LOGOUT)
+        return { success: true };
+    } catch (error) {
+        return { success: false, message: "logout_failed" };
+    } finally {
+        useAuthStore.getState().logout();
+        window.location.href = '/';
     }
 }

@@ -13,7 +13,6 @@ const processQueue = (error: any, token: string | null = null) => {
 };
 
 export const api = axios.create({
-    // baseURL: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'}/api/v1`,
     baseURL: '/api/v1',
     withCredentials: true,
 });
@@ -22,6 +21,16 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
+
+        const authRoutes = [
+            API_ROUTES.AUTH.LOGIN,
+        ];
+
+        const isAuthRoute = authRoutes.some(route => originalRequest.url.includes(route));
+
+        if (isAuthRoute) {
+            return Promise.reject(error);
+        }
 
         if (error.response?.status === 401 && !originalRequest._retry) {
             if (originalRequest.url.includes(API_ROUTES.AUTH.REFRESH)) {

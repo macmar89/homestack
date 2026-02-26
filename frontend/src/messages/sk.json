@@ -28,7 +28,8 @@
             "forbidden_superadmin": "Prístup zamietnutý. Vyžadujú sa práva systémového administrátora.",
             "forbidden_organization": "Prístup zamietnutý. Nemáte prístup k tejto organizácii.",
             "context_error": "Chyba pri overovaní kontextu organizácie",
-            "subscription_required": "Vaša skúšobná verzia vypršala. Pre pokračovanie si aktivujte predplatné."
+            "subscription_required": "Vaša skúšobná verzia vypršala. Pre pokračovanie si aktivujte predplatné.",
+            "logout_failed": "Odhlásenie zlyhalo. Skúste to prosím znova."
         }
     }
 }

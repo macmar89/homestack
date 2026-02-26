@@ -10,9 +10,12 @@ export const routing = defineRouting({
 
   pathnames: {
     '/': '/',
+    '/unathorized': '/unathorized',
+    '/admin': '/admin',
+    "/admin/dashboard": "/admin/dashboard",
     '/dashboard': '/dashboard',
     '/login': '/login',
-    '/dashboard/[slug]': '/dashboard/[slug]',
+    '/[slug]/dashboard': '/[slug]/dashboard',
   },
 })
 

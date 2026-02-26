@@ -102,8 +102,11 @@ export const loginUser = async (data: LoginInput, req: Request) => {
 
     const { password, memberships, ...userWithoutPassword } = user;
 
+    const defaultOrg = memberships.find(m => m.organization.id === user.defaultOrgId)?.organization;
+
+
     return {
-        user: userWithoutPassword,
+        user: { ...userWithoutPassword, defaultOrgSlug: defaultOrg?.slug },
         orgs: memberships.map(m => ({
             ...m.organization,
             role: m.role
@@ -226,8 +229,13 @@ export const getUserProfile = async (userId: string) => {
 
     const { memberships, ...userStats } = user
 
+    const defaultOrg = memberships.find(m => m.organization.id === user.defaultOrgId)?.organization;
+
     return {
-        user: userStats,
+        user: {
+            ...userStats,
+            defaultOrgSlug: defaultOrg?.slug
+        },
         orgs: memberships.map(m => ({
             ...m.organization,
             role: m.role

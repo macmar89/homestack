@@ -28,7 +28,8 @@
             "forbidden_superadmin": "Access denied. System administrator privileges are required.",
             "forbidden_organization": "Access denied. You do not have access to this organization.",
             "context_error": "Error verifying organization context",
-            "subscription_required": "Your trial has expired. Please activate a subscription to continue."
+            "subscription_required": "Your trial has expired. Please activate a subscription to continue.",
+            "logout_failed": "Logout failed. Please try again."
         }
     }
 }
