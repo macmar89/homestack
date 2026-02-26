@@ -1,6 +1,7 @@
 import { pgTable, text, timestamp, boolean } from 'drizzle-orm/pg-core';
 import { createId } from '@paralleldrive/cuid2';
 import { baseTimestampsFields } from '../helpers.js';
+import { organizations } from './organizations.js';
 
 export const users = pgTable('users', {
     id: text('id').primaryKey().$defaultFn(() => createId()),
@@ -21,6 +22,8 @@ export const users = pgTable('users', {
     resetPasswordExpires: timestamp('reset_password_expires'),
 
     lastActiveAt: timestamp('last_active_at'),
+
+    defaultOrgId: text('default_org_id').references(() => organizations.id),
 
     ...baseTimestampsFields
 });

@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -7,62 +10,127 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { useTranslations } from "next-intl"
+import { useForm } from "react-hook-form"
+import { getLoginSchema, LoginInput } from "@/schema/auth.schema"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter } from "@/i18n/routing"
+import { handlePostLogin } from "@/services/auth"
+import { Form, FormField, FormItem, FormControl, FormLabel, FormMessage } from "./ui/form"
+import { Eye, EyeOff } from "lucide-react"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const t = useTranslations('Auth')
+  const router = useRouter()
+
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  const form = useForm<LoginInput>({
+    resolver: zodResolver(getLoginSchema(t)),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (values: LoginInput) => {
+    setServerError(null);
+
+    const result = await handlePostLogin(values);
+
+
+    if (result.success) {
+      console.log(result)
+      // router.push("/dashboard");
+    } else {
+      if (result.field) {
+        console.log(result.message)
+        form.setError(result.field as any, {
+          message: t(`errors.${result.message}`)
+        });
+      } else {
+        console.log(result.message)
+        setServerError(t(`errors.${result.message}`));
+      }
+    }
+  };
+
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("flex w-full flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
+          <CardTitle>{t('title')}</CardTitle>
           <CardDescription>
-            Enter your email below to login to your account
+            {t('description')}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
-            <FieldGroup>
-              <Field>
-                <FieldLabel htmlFor="email">Email</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                />
-              </Field>
-              <Field>
-                <div className="flex items-center">
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('username')}</FormLabel>
+                    <FormControl>
+                      <Input placeholder="admin" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center justify-between">
+                      <FormLabel>{t('password')}</FormLabel>
+                      <a href="#" className="text-sm underline underline-offset-4 hover:text-primary">
+                        {t('forgotPassword')}
+                      </a>
+                    </div>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          className="pr-10" // Priestor pre ikonku napravo
+                          {...field}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-4 w-4 cursor-pointer" />
+                          ) : (
+                            <Eye className="h-4 w-4 cursor-pointer" />
+                          )}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {serverError && (
+                <div className="rounded-md bg-destructive/15 p-3 text-sm font-medium text-destructive animate-in fade-in zoom-in duration-200">
+                  {serverError}
                 </div>
-                <Input id="password" type="password" required />
-              </Field>
-              <Field>
-                <Button type="submit">Login</Button>
-                <Button variant="outline" type="button">
-                  Login with Google
-                </Button>
-                <FieldDescription className="text-center">
-                  Don&apos;t have an account? <a href="#">Sign up</a>
-                </FieldDescription>
-              </Field>
-            </FieldGroup>
-          </form>
+              )}
+
+              <Button type="submit" className="w-full">{t('login')}</Button>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>

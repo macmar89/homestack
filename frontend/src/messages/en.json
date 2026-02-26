@@ -1,0 +1,34 @@
+{
+    "Auth": {
+        "title": "Login to your account",
+        "description": "Enter your username below to login to your account",
+        "login": "Login",
+        "username": "Username",
+        "password": "Password",
+        "forgotPassword": "Forgot your password?",
+        "errors": {
+            "invalid_username_or_password": "Invalid username or password",
+            "username_too_short": "Username must be at least 2 characters long",
+            "password_too_short": "Password must be at least 8 characters long",
+            "missing_refresh_token": "Missing refresh token",
+            "username_already_exists": "User with this username already exists",
+            "token_expired": "Your session has expired. Please refresh your token or log in again.",
+            "unauthorized": "You are not authorized to access this resource. Please log in.",
+            "session_failed": "Failed to create session",
+            "organization_creation_failed": "Failed to create organization",
+            "user_creation_failed": "Failed to create user",
+            "user_not_found": "User not found",
+            "invalid_refresh_token": "Invalid or expired refresh token",
+            "invalid_email": "Invalid email format",
+            "phone_number_too_short": "Phone number must be at least 10 characters long",
+            "organization_name_too_short": "Organization name must be at least 2 characters long",
+            "organization_slug_too_short": "Organization slug must be at least 2 characters long",
+            "phone_number_too_long": "Phone number must be at most 15 characters long",
+            "invalid_phone_number": "Phone number must contain only numbers, spaces and + sign",
+            "forbidden_superadmin": "Access denied. System administrator privileges are required.",
+            "forbidden_organization": "Access denied. You do not have access to this organization.",
+            "context_error": "Error verifying organization context",
+            "subscription_required": "Your trial has expired. Please activate a subscription to continue."
+        }
+    }
+}

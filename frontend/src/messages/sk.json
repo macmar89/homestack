@@ -1,0 +1,34 @@
+{
+    "Auth": {
+        "title": "Prihláste sa do svojho účtu",
+        "description": "Zadajte svoje používateľské meno pre prihlásenie",
+        "login": "Prihlásiť sa",
+        "username": "Používateľské meno",
+        "password": "Heslo",
+        "forgotPassword": "Zabudli ste heslo?",
+        "errors": {
+            "invalid_username_or_password": "Nesprávne meno alebo heslo",
+            "username_too_short": "Používateľské meno musí mať aspoň 2 znaky",
+            "password_too_short": "Heslo musí mať aspoň 8 znakov",
+            "missing_refresh_token": "Chýbajúci obnovovací token",
+            "username_already_exists": "Používateľ s týmto menom už existuje",
+            "token_expired": "Vaša relácia vypršala. Prosím, obnovte token alebo sa znova prihláste.",
+            "unauthorized": "Nemáte oprávnenie na prístup k tomuto zdroju. Prosím, prihláste sa.",
+            "session_failed": "Nepodarilo sa vytvoriť reláciu",
+            "organization_creation_failed": "Nepodarilo sa vytvoriť organizáciu",
+            "user_creation_failed": "Nepodarilo sa vytvoriť používateľa",
+            "user_not_found": "Používateľ nebol nájdený",
+            "invalid_refresh_token": "Neplatný alebo expirovaný obnovovací token",
+            "invalid_email": "Neplatný formát e-mailu",
+            "phone_number_too_short": "Telefónne číslo musí mať aspoň 10 znakov",
+            "organization_name_too_short": "Názov organizácie musí mať aspoň 2 znaky",
+            "organization_slug_too_short": "Slug organizácie musí mať aspoň 2 znaky",
+            "phone_number_too_long": "Telefónne číslo môže mať maximálne 15 znakov",
+            "invalid_phone_number": "Telefónne číslo môže obsahovať iba čísla, medzery a znak +",
+            "forbidden_superadmin": "Prístup zamietnutý. Vyžadujú sa práva systémového administrátora.",
+            "forbidden_organization": "Prístup zamietnutý. Nemáte prístup k tejto organizácii.",
+            "context_error": "Chyba pri overovaní kontextu organizácie",
+            "subscription_required": "Vaša skúšobná verzia vypršala. Pre pokračovanie si aktivujte predplatné."
+        }
+    }
+}

@@ -51,13 +51,30 @@ const hashToken = (token: string): string => {
 // };
 
 export const loginUser = async (data: LoginInput, req: Request) => {
-    const [user] = await db.select({
-        id: users.id,
-        username: users.username,
-        displayName: users.displayName,
-        isSuperadmin: users.isSuperadmin,
-        password: users.password,
-    }).from(users).where(activeOnly(users, eq(users.username, data.username)));
+    const user = await db.query.users.findFirst({
+        where: (users, { eq, and }) => and(eq(users.username, data.username), activeOnly(users)),
+        columns: {
+            id: true,
+            username: true,
+            displayName: true,
+            isSuperadmin: true,
+            password: true,
+            defaultOrgId: true,
+        },
+        with: {
+            memberships: {
+                where: (memberships, { isNull }) => isNull(memberships.deletedAt),
+                with: {
+                    organization: {
+                        columns: {
+                            name: true,
+                            slug: true,
+                        }
+                    }
+                }
+            }
+        }
+    })
 
     if (!user) {
         await logActivity(
@@ -83,15 +100,15 @@ export const loginUser = async (data: LoginInput, req: Request) => {
         throw new AppError(AuthErrors.INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
     }
 
-    let orgs
+    const { password, memberships, ...userWithoutPassword } = user;
 
-    if (!user.isSuperadmin) {
-        orgs = await db.select().from(userMemberships).innerJoin(organizations, eq(userMemberships.organizationId, organizations.id)).where(eq(userMemberships.userId, user.id));
-    }
-
-    const { password, ...userWithoutPassword } = user;
-
-    return { user: userWithoutPassword };
+    return {
+        user: userWithoutPassword,
+        orgs: memberships.map(m => ({
+            ...m.organization,
+            role: m.role
+        }))
+    };
 }
 
 export const rotateRefreshToken = async (tokenString: string) => {
@@ -176,3 +193,5 @@ export const logoutUser = async (rawRefreshToken: string) => {
         return null
     })
 }
+
+export const getUserProfile = async (userId: string) => { }

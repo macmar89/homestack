@@ -13,7 +13,7 @@ import { logActivity } from "../services/audit.service.js";
 export const login = catchAsync(async (req: Request, res: Response) => {
     const validatedData = LoginSchema.parse(req.body);
 
-    const { user } = await loginUser(validatedData, req);
+    const { user, orgs } = await loginUser(validatedData, req);
 
     const userAgent = req.headers['user-agent'] || 'unknown';
     const refreshToken = await createSession(user.id, userAgent);
@@ -41,7 +41,15 @@ export const login = catchAsync(async (req: Request, res: Response) => {
 
     res.status(HttpStatus.CREATED).json({
         status: 'success',
-        data: { user: { id: user.id, username: user.username } }
+        data: {
+            user: {
+                id: user.id,
+                username: user.username,
+                displayName: user.displayName,
+                isSuperadmin: user.isSuperadmin
+            },
+            orgs
+        }
     });
 });
 
@@ -90,3 +98,7 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
         message: AuthMessages.LOGOUT_SUCCESS
     });
 });
+
+export const getMe = catchAsync(async (req: Request, res: Response) => {
+
+})
