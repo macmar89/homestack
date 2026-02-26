@@ -66,6 +66,7 @@ export const loginUser = async (data: LoginInput, req: Request) => {
                 with: {
                     organization: {
                         columns: {
+                            id: true,
                             name: true,
                             slug: true,
                         }
@@ -193,4 +194,43 @@ export const logoutUser = async (rawRefreshToken: string) => {
     })
 }
 
-export const getUserProfile = async (userId: string) => { }
+export const getUserProfile = async (userId: string) => {
+    const user = await db.query.users.findFirst({
+        where: (users, { eq, and }) => and(eq(users.id, userId), activeOnly(users)),
+        columns: {
+            id: true,
+            username: true,
+            displayName: true,
+            isSuperadmin: true,
+            defaultOrgId: true,
+        },
+        with: {
+            memberships: {
+                where: (memberships, { isNull }) => isNull(memberships.deletedAt),
+                with: {
+                    organization: {
+                        columns: {
+                            id: true,
+                            name: true,
+                            slug: true,
+                        }
+                    }
+                }
+            }
+        }
+    })
+
+    if (!user) {
+        throw new AppError(AuthErrors.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+
+    const { memberships, ...userStats } = user
+
+    return {
+        user: userStats,
+        orgs: memberships.map(m => ({
+            ...m.organization,
+            role: m.role
+        }))
+    };
+}

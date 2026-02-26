@@ -1,7 +1,7 @@
 import { catchAsync } from "../utils/catchAsync.js";
 import { type Request, type Response } from "express";
 import { AppError } from "../utils/appError.js";
-import { createSession, logoutUser, loginUser, rotateRefreshToken } from "../services/auth.service.js";
+import { createSession, logoutUser, loginUser, rotateRefreshToken, getUserProfile } from "../services/auth.service.js";
 import { AuthErrors } from "../shared/constants/errors/auth.errors.js";
 import { LoginSchema } from "../shared/constants/schema/auth.schema.js";
 import { ACCESS_TOKEN_COOKIE_OPTIONS, REFRESH_TOKEN_COOKIE_OPTIONS, REFRESH_TOKEN_CLEAR_OPTIONS, CLEAR_COOKIE_OPTIONS } from "../utils/cookie.util.js";
@@ -100,5 +100,18 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const getMe = catchAsync(async (req: Request, res: Response) => {
+    const { user, orgs } = await getUserProfile(req.user!.id);
 
+    res.status(HttpStatus.OK).json({
+        status: 'success',
+        data: {
+            user: {
+                id: user.id,
+                username: user.username,
+                displayName: user.displayName,
+                isSuperadmin: user.isSuperadmin
+            },
+            orgs
+        }
+    });
 })
