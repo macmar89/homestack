@@ -7,12 +7,11 @@ import { AppError } from "../utils/appError.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
 import { type LoginInput, type RegisterInput } from "../shared/constants/schema/auth.schema.js";
 import { AuthErrors } from "../shared/constants/errors/auth.errors.js";
-import bcrypt from "bcrypt";
 import { HttpStatus } from "../utils/httpStatusCodes.js";
-import { organizations, users, userMemberships } from '../db/schema/index.js';
 import { activeOnly } from '../db/helpers.js';
-import { isSuperadmin } from '../middleware/superadmin.middleware.js';
 import { logActivity } from './audit.service.js';
+import { verifyPassword } from '../utils/crypto.js';
+import { users } from '../db/schema/users.js';
 
 const hashToken = (token: string): string => {
     return crypto.createHash('sha256').update(token).digest('hex');
@@ -33,7 +32,7 @@ const hashToken = (token: string): string => {
 
 //         if (!organization) throw new AppError(AuthErrors.ORGANIZATION_CREATION_FAILED, HttpStatus.BAD_REQUEST);
 
-//         const hashedPassword = await bcrypt.hash(data.password, 12);
+//         const hashedPassword = hashPassword(data.password);
 
 //         const [user] = await tx.insert(users).values({
 //             username: data.username,
@@ -87,7 +86,7 @@ export const loginUser = async (data: LoginInput, req: Request) => {
         throw new AppError(AuthErrors.INVALID_CREDENTIALS, HttpStatus.UNAUTHORIZED);
     }
 
-    const isPasswordValid = await bcrypt.compare(data.password, user.password);
+    const isPasswordValid = await verifyPassword(user.password, data.password);
     if (!isPasswordValid) {
         await logActivity(
             req,

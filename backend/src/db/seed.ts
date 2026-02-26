@@ -1,6 +1,6 @@
+import { hashPassword } from "../utils/crypto";
 import { db } from "./index";
 import { users } from "./schema";
-import bcrypt from "bcrypt";
 import { eq } from "drizzle-orm";
 
 async function seed() {
@@ -14,7 +14,6 @@ async function seed() {
     }
 
     try {
-        // Check if admin already exists
         const existingAdmin = await db.query.users.findFirst({
             where: eq(users.username, user.username)
         });
@@ -25,7 +24,7 @@ async function seed() {
         }
 
         console.log("🔐 Hashing password...");
-        const hashedPassword = await bcrypt.hash(user.password, 10);
+        const hashedPassword = await hashPassword(user.password);
 
         await db.transaction(async (tx) => {
             console.log("👤 Creating superadmin user...");
